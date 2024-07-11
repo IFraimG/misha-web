@@ -9,10 +9,10 @@
             <slot name="content"></slot>
           </div>
           <div class="modal__footer">
-            <button class="modal__button-cancel" @click="sendSuccess">
+            <button class="modal__button-cancel" @click="closeModal">
                 Отмена
             </button>
-            <button class="modal__button-confirm" @click="closeModal">
+            <button class="modal__button-confirm" @click="sendSuccess">
                 <slot name="acceptButton"></slot>
             </button>
           </div>
@@ -22,10 +22,12 @@
 </template>
   
 <script setup>
-import { nextTick, onBeforeUnmount, onMounted, emit } from "vue"
+import { nextTick, onBeforeUnmount, onMounted, defineEmits } from "vue"
 import { useRouter } from "vue-router"
     // import "./scss/ModalWords.scss"
   
+const emit = defineEmits(["onsuccess"])
+
 const router = useRouter()
   
 onMounted(() => {
@@ -44,7 +46,7 @@ const sendSuccess = isTrue => emit("onsuccess", isTrue)
 const closeModal = () => {
     document.documentElement.style.overflow = "auto"
     sendSuccess(false)
-    router.go(-1)
+    // router.go(-1)
 }
 
   </script>
