@@ -39,7 +39,20 @@
 					</div> -->
 				<button class="left_block__button" type="button" @click="openModal(true)">Добавить папку</button>
 			</div>
-			<div class="right_block"></div>
+			<div class="right_block">
+				<div class="folder_element">
+					<img src="@/assets/img/blin.png" alt="" class="folder_element__back">
+					<div class="folder_element__bar">
+						<p class="folder_element__title">Fuuuuuck</p>
+					</div>
+				</div>
+				<div class="folder_element">
+					<img src="@/assets/img/blin.png" alt="" class="folder_element__back">
+					<div class="folder_element__bar">
+						<p class="folder_element__title">Fuuuuuck</p>
+					</div>
+				</div>
+			</div>
 		</div>
 		<Modal v-if="isModal.value" @onsuccess="createFolder">
             <template #title></template>
@@ -55,6 +68,8 @@
 import { ref, reactive, onMounted } from "vue"
 import "@/styles/func.css"
 import "@/styles/folder.css"
+import "@/styles/link.css"
+import "@/styles/funcMedia.css"
 import Modal from "@/components/Modal.vue"
 
 const folderTitle = ref("")
