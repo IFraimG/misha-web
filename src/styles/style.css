@@ -373,7 +373,7 @@
 			background-repeat: no-repeat;
 			margin-top: 48px;
 			text-align: center;
-			background: url(../img/login_back.svg) 50%/cover no-repeat;;
+			background: url("@/assets/img/login_back.svg") 50%/cover no-repeat;;
 			justify-content: center;
 			margin-bottom: 24px;
 			align-items: center;

@@ -1,5 +1,5 @@
 <template>
-	<div class="main">
+	<div class="main" ref="homeRoot">
 		<div class="main__body">
 			<div class="main__header">
 				<div class="main__left_flex">
@@ -11,7 +11,7 @@
 				<div class="main__right_flex">
 					<ul class="main__ul_right_flex">
 						<li v-for="item in linksList" :key="item" @click="scrollToSection(item.refInfo)"> 
-              <a class="main__a_right_flex" :ref="item.refLink" :id="item.moveID" :foo="item.moveID">{{ item.text }}</a>
+              <a class="main__a_right_flex" :ref="item.refLink" :foo="item.moveID">{{ item.text }}</a>
             </li>
 					</ul>
 				</div>
@@ -75,12 +75,12 @@
 			<div class="login" id="login_block" ref="loginBlock">
 				<div class="login__block">
 					<div class="login__options">
-						<div class="block__registration">Регистрация</div>
-						<div class="block__login">Вход</div>
+						<div class="block__registration" ref="signup" @click="setStatusIsSignup(true)">Регистрация</div>
+						<div class="block__login" ref="login" @click="setStatusIsSignup(false)">Вход</div>
 					</div>
-					 <input type="tel" class="login__telephone" placeholder="Номер телефона" required>
-					 <input type="password" class="login__password" placeholder="Пароль" required>
-					 <button class="login__next" type="button">Далее</button>
+					 <input type="tel" class="login__telephone" placeholder="Номер телефона" v-model="phoneInput" required>
+					 <input type="password" class="login__password" placeholder="Пароль" v-model="passwordInput" required>
+					 <button class="login__next" type="button" @click="sendAuth">Далее</button>
 				</div>
 			</div>
 			<div class="bottom_bar" id="bottom_block" ref="bottomBlock">
@@ -95,10 +95,11 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue"
-
+import { onMounted, ref, reactive, onBeforeMount } from "vue"
+import { useRouter } from "vue-router"
 import "@/styles/style.css"
 
+let homeRoot = ref(null)
 let mainBlock = ref(null)
 let whyBlock = ref(null)
 let opportunitiesBlock = ref(null)
@@ -123,9 +124,71 @@ const linksList = [
 
 const scrollToSection = (refInfo) => refInfo.value.scrollIntoView({ behavior: "smooth", block: "start" })
 
+const signup = ref(null)
+const login = ref(null)
+
+const phoneInput = ref("")
+const passwordInput = ref("")
+
+let isSignupStatus = reactive({value: true}) 
+
+const router = useRouter()
+
+const setStatusIsSignup = isSignup => {
+	isSignupStatus.value = isSignup
+	if (isSignup) {
+		signup.value.classList.add("block__registration")
+		signup.value.classList.remove("block__login")	
+		
+		login.value.classList.add("block__login")
+		login.value.classList.remove("block__registration")
+	} else {
+		login.value.classList.add("block__registration")
+		login.value.classList.remove("block__login")
+
+		signup.value.classList.add("block__login")
+		signup.value.classList.remove("block__registration")	
+	}
+	// console.log(signup.value.classList.add(""));
+}
+
+const sendAuth = async () => {
+	console.log(phoneInput.value, passwordInput.value);
+	if (phoneInput.value.length > 0 && passwordInput.value.length > 0) {
+		try {
+			let json = await fetch(`http://95.163.221.125:8080/auth/users/${isSignupStatus.value ? "signup" : "login"}`, {
+			method: "POST",
+			mode: 'cors',
+			headers: {
+				"Content-Type": "application/json",
+				'Access-Control-Allow-Origin':'*'
+			},
+			body: JSON.stringify({ phone: phoneInput.value, password: passwordInput.value })
+		})
+
+		let res = await json.json()
+		localStorage.setItem("token", res.token)
+		localStorage.setItem("userID", res.user.id)
+
+		phoneInput.value = ""
+		passwordInput.value = ""
+
+		router.push({ name: "func" })
+		} catch (error) {
+			console.log(error);
+		}
+	}
+}
+
+onBeforeMount(() => {
+	if (localStorage.getItem("token") != null) {
+		router.push({ name: "func" })
+	}
+})
+
 onMounted(() => {
     const sections = linksList.map(item => item.refInfo)
-    const menuLinks = [mishaLink.refLink.value, ...linksList.map(item => item.refLink.value)]
+	const menuLinks = homeRoot.value.querySelectorAll('[foo]')
 
     const options = {
         root: null,
@@ -136,17 +199,14 @@ onMounted(() => {
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-
-                // const activeLink = document.querySelector(`.main__misha[foo="${entry.target.id}"]`);
-                
                 menuLinks.forEach(linkRef => {
-                  if (linkRef) {
-                    console.log(entry.target.id);
-                  }
-                  // console.log(linkRef.value.getAttribute);
-                  // link.classList.remove("active")
+					if (linkRef) {
+						const element = document.getElementById(entry.target.id)
+						if (entry.target.id == linkRef.getAttribute("foo")) {
+							linkRef.classList.add("active");
+						} else linkRef.classList.remove("active")
+					}
                 });
-                // activeLink.classList.add("active");
             }
         });
     }, options);
@@ -157,5 +217,6 @@ onMounted(() => {
         observer.observe(section.value)
       }
     })
+
 });
 </script>
