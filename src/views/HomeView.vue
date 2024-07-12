@@ -158,10 +158,8 @@ const sendAuth = async () => {
 		try {
 			let json = await fetch(`http://95.163.221.125:8080/auth/users/${isSignupStatus.value ? "signup" : "login"}`, {
 			method: "POST",
-			mode: 'cors',
 			headers: {
 				"Content-Type": "application/json",
-				'Access-Control-Allow-Origin':'*'
 			},
 			body: JSON.stringify({ phone: phoneInput.value, password: passwordInput.value })
 		})

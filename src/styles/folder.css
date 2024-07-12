@@ -58,3 +58,7 @@
     height: 160px;
     border-radius: 10px;
 }
+
+.folder__active {
+	outline: 3px solid #007AFF;
+}

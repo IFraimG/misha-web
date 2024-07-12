@@ -8,7 +8,7 @@
 					<button type="submit" class="left_block__icon"></button>
 				</form>
 				<div v-if="foldersList.value != null && foldersList.value?.length > 0" class="left_block__text-container">
-					<div class="folder" v-for="item in foldersList.value" :key="item.folderID" @click="openLinks(item)">
+					<div v-for="item in foldersList.value" :key="item.folderID" @click="openLinks(item)" :class="activeFolder.value.folderID == item.folderID ? 'folder folder__active' : 'folder'">
 						<img v-if="item.preview.length > 0" :src="'http://95.163.221.125:8080/image/' + item.preview" alt="" class="folder__back">
 						<img v-else src="@/assets/img/grey_back.svg" alt="" class="folder__back">
 						<div class="folder__bar">
@@ -25,35 +25,21 @@
 				<div v-else class="left_block__text-container">
 					<p class="left_block__text">У вас пока нет папок</p>
 				</div>
-				<!-- <div class="folder">
-						<img src="@/assets/img/grey_back.svg" alt="" class="folder__back">
-						<div class="folder__bar">
-							<div class="folder__barsik">
-								<p class="folder__title">Food</p>
-								<div class="folder__bottom">
-									<p class="folder__count">0 сохранённых</p>
-									<p class="folder__date">02/07/2024</p>
-								</div>
-							</div>
-						</div>
-					</div> -->
 				<button class="left_block__button" type="button" @click="openModal(true)">Добавить папку</button>
 			</div>
 			<div class="right_block">
+				<div class="right_block__head">
+					<p class="right_block__title">{{ activeFolder.value.title }}</p>
+					<p class="right_block__menu">...</p>
+				</div>
 				<div class="folder_element" v-for="(item, index) in linksList.value" :key="item.linkID" @click="openCurrentLink(item.link)">
 					<img v-if="item.image.length > 0" :src="'http://95.163.221.125:8080/image/' + item.image" alt="" class="folder_element__back">
 					<img v-else src="@/assets/img/grey_back.svg" alt="" class="folder_element__back">
 					<div class="folder_element__bar">
-						<img src="@/assets/img/cancel.svg" alt="" class="folder_element__delete" @click.stop="removeLink(item.linkID)" />
+						<img src="@/assets/img/cancel.svg" alt="" class="folder_element__delete" @click.stop="setRemoveLink(item.linkID)" />
 						<p class="folder_element__title">{{ item.title }}</p>
 					</div>
 				</div>
-				<!-- <div class="folder_element">
-					<img src="@/assets/img/blin.png" alt="" class="folder_element__back">
-					<div class="folder_element__bar">
-						<p class="folder_element__title">Fuuuuuck</p>
-					</div>
-				</div> -->
 			</div>
 		</div>
 		<Modal v-if="isModal.value" @onsuccess="createFolder">
@@ -65,11 +51,24 @@
 			</template>
 			<template #acceptButton>Сохранить</template>
         </Modal>
+
+		<Modal v-if="isModalDelete.value" @onsuccess="removeLink">
+            <template #title>
+				<h2 class="modal__title">Удалить папку?</h2>
+			</template>
+            <template #content>
+				<p class="modal__warning">После удаления папку не получится восстановить</p>
+			</template>
+			<template #acceptButton>
+				<span class="modal__delete__button">Удалить</span>
+			</template>
+        </Modal>
 	</div>
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from "vue"
+import { ref, reactive, onMounted, onBeforeMount } from "vue"
+import { useRouter } from "vue-router"
 import "@/styles/func.css"
 import "@/styles/folder.css"
 import "@/styles/link.css"
@@ -79,21 +78,24 @@ import Modal from "@/components/Modal.vue"
 
 const folderTitle = ref("")
 const isModal = reactive({ isTrue: false })
+const isModalDelete = reactive({ isTrue: false })
+const removeLinkID = reactive({ value: "" })
+
 const searchText = reactive({ value: "" })
 
 const foldersList = reactive({ folders: [] })
 const linksList = reactive({ links: [] })
+
+const activeFolder = reactive({ value: "" })
 
 const createFolder = async (isSuccess) => {
 	if (isSuccess && folderTitle.value.length > 0) {
 		try {
 			let json = await fetch("http://95.163.221.125:8080/folders/create", {
 				method: "POST",
-				mode: 'cors',
 				headers: {
 					"Content-Type": "application/json",
-					"Authorization": localStorage.getItem("token"),
-					'Access-Control-Allow-Origin':'*'
+					"Authorization": localStorage.getItem("token")
 				},
 				body: JSON.stringify({ title: folderTitle.value, userID: localStorage.getItem("userID") })
 			})
@@ -112,6 +114,12 @@ const createFolder = async (isSuccess) => {
 }
 
 const openModal = isTrue => isModal.value = isTrue
+const openModalDelete = isTrue => isModalDelete.value = isTrue
+
+onBeforeMount(() => {
+	const router = useRouter()
+	if (localStorage.getItem("token") == null) router.push("/")
+})
 
 onMounted(async () => {
 	try {
@@ -121,6 +129,9 @@ onMounted(async () => {
 
 		let res = await json.json()
 		foldersList.value = [...res.folders]
+		if (res.folders.length > 0) {
+			openLinks(res.folders[0])
+		}
 		console.log(foldersList.value);
 		} catch (error) {
 			console.log(error);
@@ -149,6 +160,7 @@ const openLinks = async (folder) => {
 
 		let res = await json.json()
 		linksList.value = [...res.links]
+		activeFolder.value = folder
 		console.log(linksList.value);
 	} catch (error) {
 		console.log(error);
@@ -170,16 +182,25 @@ const removeFolder = async (folderID) => {
 	}
 }
 
-const removeLink = async (linkID) => {
-	try {
-		await fetch(`http://95.163.221.125:8080/links/deleteLinkByLinkID?linkID=${linkID}`, {
-			method: "DELETE", headers: { "Content-Type": "application/json", "Authorization": localStorage.getItem("token") },
-		})
-		
-		linksList.value = [...linksList.value].filter(item => item.linkID != linkID)
-		console.log(linksList.value);
-	} catch (error) {
-		console.log(error);
+const setRemoveLink = linkID => {
+	removeLinkID.value = linkID
+	openModalDelete(true)
+}
+
+const removeLink = async (isTrue) => {
+	if (isTrue) {
+		try {
+			await fetch(`http://95.163.221.125:8080/links/deleteLinkByLinkID?linkID=${removeLinkID.value}`, {
+				method: "DELETE", headers: { "Content-Type": "application/json", "Authorization": localStorage.getItem("token") },
+			})
+			
+			linksList.value = [...linksList.value].filter(item => item.linkID != removeLinkID.value)
+			removeLinkID.value = ""
+			console.log(linksList.value);
+		} catch (error) {
+			console.log(error);
+		}
 	}
+	openModalDelete(false)
 }
 </script>

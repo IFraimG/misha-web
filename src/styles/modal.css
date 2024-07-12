@@ -88,3 +88,16 @@
     font-size: 18px;
     font-family: "SF Pro Semibold";
 }
+
+.modal__warning {
+  width: 100%;
+  font-family: "SF Pro Medium";
+  text-align: center;
+  padding-bottom: 20px;
+  color: #7F7F7F;
+  opacity: 0.5;
+}
+
+.modal__delete__button {
+  color: #FF3B30;
+}

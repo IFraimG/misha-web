@@ -30,6 +30,7 @@
 					color: #464646;
 					font-family: SF Pro Semibold;
 					font-size: 24px;
+					cursor: pointer;
 				}
 				.main__misha.active {
 					color: rgb(0, 122, 255);
@@ -47,6 +48,7 @@
 					margin: 0 0 0 24px;
 					color: rgb(149, 149, 149);
 					letter-spacing: 1px;
+					cursor: pointer;
 				}
 				.main__a_right_flex {
 					color: rgb(149, 149, 149);
