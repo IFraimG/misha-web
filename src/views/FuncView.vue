@@ -31,6 +31,14 @@
 				<div class="right_block__head">
 					<p class="right_block__title">{{ activeFolder.value.title }}</p>
 					<p class="right_block__menu">...</p>
+					<div class="panel">
+						<div class="panel__edit">
+							<p class="panel__edit_text">Edit the title</p>
+						</div>
+						<div class="panel__delete">
+							<p class="panel__delete_text">Delete the folder</p>
+						</div>
+					</div>
 				</div>
 				<div class="folder_element" v-for="(item, index) in linksList.value" :key="item.linkID" @click="openCurrentLink(item.link)">
 					<img v-if="item.image.length > 0" :src="'http://95.163.221.125:8080/image/' + item.image" alt="" class="folder_element__back">

@@ -121,3 +121,37 @@
 		z-index: 1000;
 	}
 }
+
+
+.panel {
+    height: 112px;
+    width: 360px;
+    border-radius: 15px;
+    backdrop-filter: blur(50px);
+    background: rgb(241,240,239);
+    .panel__edit
+{
+    height: 50%;
+    width: 100%;
+    display: flex;
+    border-bottom: 0.3330000042915344px solid rgb(201,201,201);
+}
+.panel__delete {
+    height: 50%;
+    width: 100%;
+    display: flex;
+}
+
+    .panel__edit_text {
+        margin: auto;
+        color: rgb(0, 122, 255);
+        font-family: 'SF Pro Medium';
+        font-size: 16px;
+    }
+    .panel__delete_text {
+        margin: auto;
+        color: rgb(255, 59, 48);
+        font-family: 'SF Pro Medium';
+        font-size: 16px;
+    }
+}
