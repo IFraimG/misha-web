@@ -99,6 +99,9 @@
 	}
 
 	.right_block__head {
+		position: relative;
+		right: 0;
+		top: 0;
 		height: 56px;
 		width: 100%;
 		border-top-left-radius: 20px;
@@ -124,17 +127,20 @@
 
 
 .panel {
+	position: absolute;
+	right: 0;
+	top: 50px;
     height: 112px;
     width: 360px;
+	z-index: 9999;
     border-radius: 15px;
     backdrop-filter: blur(50px);
     background: rgb(241,240,239);
-    .panel__edit
-{
+.panel__edit {
     height: 50%;
     width: 100%;
     display: flex;
-    border-bottom: 0.3330000042915344px solid rgb(201,201,201);
+    border-bottom: 1px solid rgb(201,201,201);
 }
 .panel__delete {
     height: 50%;
