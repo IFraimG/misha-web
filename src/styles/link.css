@@ -10,7 +10,7 @@
     .folder_element__back {
         width: 100%;
         min-height: 287px;
-        max-height: 500px;
+        height: 100%;
         border-radius: 10px;
     }
     .folder_element__bar {
@@ -22,13 +22,19 @@
         height: 48px;
         left: 0;
         bottom: 0;
-        flex-direction: column;
-        justify-content: space-between;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
     }
     .folder_element__title {
         font-family: 'SF Pro Semibold';
         font-size: 14px;
-        margin-top: 12px;
         margin-left: 12px;
     }
+}
+
+.folder_element__delete {
+    width: 20px;
+    height: 20px;
+    margin-left: 8px;
 }

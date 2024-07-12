@@ -44,6 +44,7 @@
 					<img v-if="item.image.length > 0" :src="'http://95.163.221.125:8080/image/' + item.image" alt="" class="folder_element__back">
 					<img v-else src="@/assets/img/grey_back.svg" alt="" class="folder_element__back">
 					<div class="folder_element__bar">
+						<img src="@/assets/img/cancel.svg" alt="" class="folder_element__delete" @click.stop="removeLink(item.linkID)" />
 						<p class="folder_element__title">{{ item.title }}</p>
 					</div>
 				</div>
