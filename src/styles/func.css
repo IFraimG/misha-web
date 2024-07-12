@@ -125,6 +125,21 @@
 	}
 }
 
+.right_block__body {
+	display: flex;
+	height: 90%;
+
+	.right_block__empty
+	{
+		text-align: center;
+		top: 50%;
+		margin: auto;
+		font-family: 'SF Pro Semibold';
+		font-size: 14px;
+		color: rgb(0, 122, 255);
+	}
+}
+
 
 .panel {
 	position: absolute;
@@ -136,6 +151,7 @@
     border-radius: 15px;
     backdrop-filter: blur(50px);
     background: rgb(241,240,239);
+	cursor: pointer;
 .panel__edit {
     height: 50%;
     width: 100%;

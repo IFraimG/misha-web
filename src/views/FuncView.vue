@@ -30,15 +30,18 @@
 			<div class="right_block">
 				<div class="right_block__head">
 					<p class="right_block__title">{{ activeFolder.value.title }}</p>
-					<p class="right_block__menu">...</p>
-					<div class="panel">
+					<p class="right_block__menu" @click.stop="setOpenPanel(true)">...</p>
+					<div class="panel" v-if="isOpenPanel.value">
 						<div class="panel__edit">
-							<p class="panel__edit_text">Edit the title</p>
+							<p class="panel__edit_text" @click="setOpenPanel(false)">Закрыть</p>
 						</div>
-						<div class="panel__delete">
-							<p class="panel__delete_text">Delete the folder</p>
+						<div class="panel__delete" @click="removeFolder(activeFolder.value.folderID)">
+							<p class="panel__delete_text">Удалить папку</p>
 						</div>
 					</div>
+				</div>
+				<div v-if="linksList.value?.length == 0" class="right_block__body">
+					<p class="right_block__empty">В этой папке пока нет материалов</p>
 				</div>
 				<div class="folder_element" v-for="(item, index) in linksList.value" :key="item.linkID" @click="openCurrentLink(item.link)">
 					<img v-if="item.image.length > 0" :src="'http://95.163.221.125:8080/image/' + item.image" alt="" class="folder_element__back">
@@ -95,6 +98,8 @@ const foldersList = reactive({ folders: [] })
 const linksList = reactive({ links: [] })
 
 const activeFolder = reactive({ value: "" })
+
+const isOpenPanel = reactive({ value: "" })
 
 const createFolder = async (isSuccess) => {
 	if (isSuccess && folderTitle.value.length > 0) {
@@ -184,6 +189,8 @@ const removeFolder = async (folderID) => {
 		})
 		
 		foldersList.value = [...foldersList.value].filter(item => item.folderID != folderID)
+		activeFolder.value = foldersList.value[0]
+		setOpenPanel(false)
 		console.log(foldersList.value);
 	} catch (error) {
 		console.log(error);
@@ -211,4 +218,6 @@ const removeLink = async (isTrue) => {
 	}
 	openModalDelete(false)
 }
+
+const setOpenPanel = isOpen => isOpenPanel.value = isOpen
 </script>
