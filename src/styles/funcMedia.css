@@ -1,5 +1,5 @@
 
-@media (max-width: 1410px) {
+@media (max-width: 1430px) {
     .folder {
         width: 200px;
     }
@@ -7,4 +7,16 @@
         width: 200px;
     }
 
+}
+
+@media (max-width: 1170px) {
+    /* .folder {
+        width: 150px;
+    }
+    .folder__back {
+        width: 150px;
+    } */
+    .folder_element {
+        width: 300px;
+    }
 }
