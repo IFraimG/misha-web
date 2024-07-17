@@ -1,16 +1,16 @@
-# mishaweb
+# MISHA
 
-This template should help get you started developing with Vue 3 in Vite.
+Система хранения материалов в виде сслыкок и краткой информации.
 
-## Recommended IDE Setup
+<img src="https://github.com/IFraimG/misha-web/blob/main/src/assets/icon.svg" width="200" align="right" hspace="20">
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+### Технологии
 
-## Customize configuration
+* Vue3
+* Vite
+* Fetch
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
-
-## Project Setup
+### Project Setup
 
 ```sh
 npm install
@@ -26,10 +26,5 @@ npm run dev
 
 ```sh
 npm run build
-```
 
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
 ```
