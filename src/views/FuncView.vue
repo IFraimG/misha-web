@@ -99,8 +99,8 @@
             <template #content>
 				<div class="content modal__link-content">
 					<input type="text" placeholder="Ссылка..." v-model="newLink.value" required>
-					<input type="text" placeholder="Укажите название..." v-model="newLink.value" required>
-					<input type="text" placeholder="Укажите описание..." v-model="newLink.value" required>
+					<input type="text" placeholder="Укажите название..." v-model="newLinkTitle.value" required>
+					<input type="text" placeholder="Укажите описание..." v-model="newLinkDescription.value" required>
 					<button>Отправить</button>
 				</div>
 			</template>
@@ -110,7 +110,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, onBeforeMount } from "vue"
+import { ref, reactive, onMounted } from "vue"
 import { useRouter } from "vue-router"
 import "@/styles/func.css"
 import "@/styles/folder.css"
@@ -169,11 +169,6 @@ const openModal = isTrue => isModal.value = isTrue
 const openModalDelete = isTrue => isModalDelete.value = isTrue
 const openModalFolderDelete = isTrue => isModalFolderDelete.value = isTrue
 const openModalCreateLink = isTrue => isModalLinkCreate.value = isTrue
-
-onBeforeMount(() => {
-	const router = useRouter()
-	if (localStorage.getItem("token") == null) router.push("/")
-})
 
 onMounted(async () => {
 	try {

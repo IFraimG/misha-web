@@ -11,7 +11,7 @@
 				<div class="main__right_flex">
 					<ul class="main__ul_right_flex">
 						<li v-for="item in linksList" :key="item" @click="scrollToSection(item.refInfo)"> 
-              <a class="main__a_right_flex" :ref="item.refLink" :foo="item.moveID">{{ item.text }}</a>
+            <a class="main__a_right_flex" :ref="item.refLink" :foo="item.moveID">{{ item.text }}</a>
             </li>
 					</ul>
 				</div>
@@ -78,9 +78,9 @@
 						<div class="block__registration" ref="signup" @click="setStatusIsSignup(true)">Регистрация</div>
 						<div class="block__login" ref="login" @click="setStatusIsSignup(false)">Вход</div>
 					</div>
-					 <input type="tel" class="login__telephone" placeholder="Номер телефона" v-model="phoneInput" required>
-					 <input type="password" class="login__password" placeholder="Пароль" v-model="passwordInput" required>
-					 <button class="login__next" type="button" @click="sendAuth">Далее</button>
+					<input type="tel" class="login__telephone" placeholder="Номер телефона" v-model="phoneInput" required>
+					<input type="password" class="login__password" placeholder="Пароль" v-model="passwordInput" required>
+					<button class="login__next" type="button" @click="sendAuth">Далее</button>
 				</div>
 			</div>
 			<div class="bottom_bar" id="bottom_block" ref="bottomBlock">
@@ -95,7 +95,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref, reactive, onBeforeMount } from "vue"
+import { onMounted, ref, reactive } from "vue"
 import { useRouter } from "vue-router"
 import "@/styles/style.css"
 
@@ -149,7 +149,6 @@ const setStatusIsSignup = isSignup => {
 		signup.value.classList.add("block__login")
 		signup.value.classList.remove("block__registration")	
 	}
-	// console.log(signup.value.classList.add(""));
 }
 
 const sendAuth = async () => {
@@ -177,12 +176,6 @@ const sendAuth = async () => {
 		}
 	}
 }
-
-onBeforeMount(() => {
-	if (localStorage.getItem("token") != null) {
-		router.push({ name: "func" })
-	}
-})
 
 onMounted(() => {
     const sections = linksList.map(item => item.refInfo)
