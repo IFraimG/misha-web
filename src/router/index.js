@@ -24,7 +24,7 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
-	let json = await fetch(`http://95.163.221.125:8080/folders/findFoldersByTitle?userID=${localStorage.getItem("userID")}&title=''`, {
+	let json = await fetch(`${import.meta.env.VITE_SERVER}/folders/findFoldersByTitle?userID=${localStorage.getItem("userID")}&title=''`, {
 		method: "GET", headers: { "Content-Type": "application/json", "Authorization": localStorage.getItem("token") },
 	})
 
