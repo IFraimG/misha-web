@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<div class="func" ref="funcRoot">
+		<div class="func" ref="funcRoot" @click="setOpenPanel(false)">
 			<div class="left_block">
 				<p class="left_block__title">Папки</p>
 				<form class="left_block__search">
@@ -30,25 +30,30 @@
 			<div class="right_block">
 				<div class="right_block__head">
 					<p class="right_block__title">{{ activeFolder.value.title }}</p>
-					<p class="right_block__menu" @click.stop="setOpenPanel(true)">...</p>
-					<div class="panel" v-if="isOpenPanel.value">
-						<div class="panel__edit">
-							<p class="panel__edit_text" @click="setOpenPanel(false)">Закрыть</p>
-						</div>
-						<div class="panel__delete" @click="removeFolder(activeFolder.value.folderID)">
-							<p class="panel__delete_text">Удалить папку</p>
-						</div>
+					<span class="right_block__menu" @click.stop="setOpenPanel(true)">Действия</span>
+					<div class="panel" v-if="isOpenPanel">
+							<div class="panel__edit" @click="setOpenPanel(false)">
+								<p class="panel__edit_text">Закрыть</p>
+							</div>
+							<div class="panel__edit" @click="openModalCreateLink(true)">
+								<p class="panel__edit_text">Добавить ссылку</p>
+							</div>
+							<div class="panel__edit" @click="openModalFolderDelete(true)">
+								<p class="panel__delete_text">Удалить папку</p>
+							</div>
 					</div>
 				</div>
 				<div v-if="linksList.value?.length == 0" class="right_block__body">
 					<p class="right_block__empty">В этой папке пока нет материалов</p>
 				</div>
-				<div class="folder_element" v-for="(item, index) in linksList.value" :key="item.linkID" @click="openCurrentLink(item.link)">
-					<img v-if="item.image.length > 0" :src="'http://95.163.221.125:8080/image/' + item.image" alt="" class="folder_element__back">
-					<img v-else src="@/assets/img/grey_back.svg" alt="" class="folder_element__back">
-					<div class="folder_element__bar">
-						<img src="@/assets/img/cancel.svg" alt="" class="folder_element__delete" @click.stop="setRemoveLink(item.linkID)" />
-						<p class="folder_element__title">{{ item.title }}</p>
+				<div class="folders__list">
+					<div class="folder_element" v-for="(item, index) in linksList.value" :key="item.linkID" @click="openCurrentLink(item.link)">
+						<img v-if="item.image.length > 0" :src="'http://95.163.221.125:8080/image/' + item.image" alt="" class="folder_element__back">
+						<img v-else src="@/assets/img/grey_back.svg" alt="" class="folder_element__back">
+						<div class="folder_element__bar">
+							<img src="@/assets/img/cancel.svg" alt="" class="folder_element__delete" @click.stop="setRemoveLink(item.linkID)" />
+							<p class="folder_element__title">{{ item.title }}</p>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -65,6 +70,18 @@
 
 		<Modal v-if="isModalDelete.value" @onsuccess="removeLink">
             <template #title>
+				<h2 class="modal__title">Удалить ссылку?</h2>
+			</template>
+            <template #content>
+				<p class="modal__warning">После удаления ссылку не получится восстановить</p>
+			</template>
+			<template #acceptButton>
+				<span class="modal__delete__button">Удалить</span>
+			</template>
+        </Modal>
+
+		<Modal v-if="isModalFolderDelete.value" @onsuccess="removeFolder">
+            <template #title>
 				<h2 class="modal__title">Удалить папку?</h2>
 			</template>
             <template #content>
@@ -73,6 +90,21 @@
 			<template #acceptButton>
 				<span class="modal__delete__button">Удалить</span>
 			</template>
+        </Modal>
+
+		<Modal v-if="isModalLinkCreate.value" @onsuccess="createLink">
+            <template #title>
+				<h2 class="modal__title">Добавление ссылки</h2>
+			</template>
+            <template #content>
+				<div class="content modal__link-content">
+					<input type="text" placeholder="Ссылка..." v-model="newLink.value" required>
+					<input type="text" placeholder="Укажите название..." v-model="newLink.value" required>
+					<input type="text" placeholder="Укажите описание..." v-model="newLink.value" required>
+					<button>Отправить</button>
+				</div>
+			</template>
+			<template #acceptButton>Сохранить</template>
         </Modal>
 	</div>
 </template>
@@ -90,6 +122,8 @@ import Modal from "@/components/Modal.vue"
 const folderTitle = ref("")
 const isModal = reactive({ isTrue: false })
 const isModalDelete = reactive({ isTrue: false })
+const isModalFolderDelete = reactive({ isTrue: false })
+const isModalLinkCreate = reactive({ isTrue: false })
 const removeLinkID = reactive({ value: "" })
 
 const searchText = reactive({ value: "" })
@@ -99,7 +133,12 @@ const linksList = reactive({ links: [] })
 
 const activeFolder = reactive({ value: "" })
 
-const isOpenPanel = reactive({ value: "" })
+const isOpenPanel = ref("")
+
+const newLink = reactive({ value: "" })
+const newLinkTitle = reactive({ value: "" })
+const newLinkDescription = reactive({ value: "" })
+
 
 const createFolder = async (isSuccess) => {
 	if (isSuccess && folderTitle.value.length > 0) {
@@ -128,6 +167,8 @@ const createFolder = async (isSuccess) => {
 
 const openModal = isTrue => isModal.value = isTrue
 const openModalDelete = isTrue => isModalDelete.value = isTrue
+const openModalFolderDelete = isTrue => isModalFolderDelete.value = isTrue
+const openModalCreateLink = isTrue => isModalLinkCreate.value = isTrue
 
 onBeforeMount(() => {
 	const router = useRouter()
@@ -180,21 +221,26 @@ const openLinks = async (folder) => {
 	} 
 }
 
-const openCurrentLink = (link) => window.location.assign(link)
+const openCurrentLink = (link) => window.open(link, '_blank')
 
-const removeFolder = async (folderID) => {
-	try {
-		await fetch(`http://95.163.221.125:8080/folders/deleteFolderByFolderID?folderID=${folderID}`, {
-			method: "DELETE", headers: { "Content-Type": "application/json", "Authorization": localStorage.getItem("token") },
-		})
-		
-		foldersList.value = [...foldersList.value].filter(item => item.folderID != folderID)
-		activeFolder.value = foldersList.value[0]
-		setOpenPanel(false)
-		console.log(foldersList.value);
-	} catch (error) {
-		console.log(error);
-	}
+const removeFolder = async isConfirm => {
+	if (isConfirm) {
+		try {
+			await fetch(`http://95.163.221.125:8080/folders/deleteFolderByFolderID?folderID=${activeFolder.value.folderID}`, {
+				method: "DELETE", headers: { "Content-Type": "application/json", "Authorization": localStorage.getItem("token") },
+			})
+			
+			foldersList.value = [...foldersList.value].filter(item => item.folderID != activeFolder.value.folderID)
+			activeFolder.value = foldersList.value[0]
+			openLinks(foldersList.value[0])
+			setOpenPanel(false)
+			console.log(foldersList.value);
+		} catch (error) {
+			console.log(error);
+		}
+	} 
+
+	openModalFolderDelete(false)
 }
 
 const setRemoveLink = linkID => {
@@ -217,6 +263,23 @@ const removeLink = async (isTrue) => {
 		}
 	}
 	openModalDelete(false)
+}
+
+const createLink = async isTrue => {
+	if (isTrue) {
+		// try {
+		// 	await fetch(`http://95.163.221.125:8080/links/deleteLinkByLinkID?linkID=${removeLinkID.value}`, {
+		// 		method: "DELETE", headers: { "Content-Type": "application/json", "Authorization": localStorage.getItem("token") },
+		// 	})
+			
+		// 	linksList.value = [...linksList.value].filter(item => item.linkID != removeLinkID.value)
+		// 	removeLinkID.value = ""
+		// 	console.log(linksList.value);
+		// } catch (error) {
+		// 	console.log(error);
+		// }
+	}
+	openModalCreateLink(false)
 }
 
 const setOpenPanel = isOpen => isOpenPanel.value = isOpen
