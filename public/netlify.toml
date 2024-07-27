@@ -3,6 +3,5 @@
   to = "http://95.163.221.125:8080/auth/users/login"
   status = 200
   force = true
-  headers = {
+  [redirects.headers]
     Content-Type = "application/json" 
-  }
