@@ -18,7 +18,7 @@ const router = createRouter({
     {
       path: '/main',
       name: 'func',
-      component: () => FuncView
+      component: FuncView
     },
   ]
 })
