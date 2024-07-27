@@ -29,6 +29,7 @@ router.beforeEach(async (to, from, next) => {
 	})
 
   if (json.status == 401 && to.name != "home") return next({ name: "home" })
+  else if (json.status == 200) return next({ name: "func" })
 
   return next()
 })
