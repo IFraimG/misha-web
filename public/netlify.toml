@@ -1,7 +1,5 @@
 [[redirects]]
-  from = "/api/auth/users/login"
-  to = "http://95.163.221.125:8080/auth/users/login"
-  status = 200
-  force = true
-  [redirects.headers]
-    Content-Type = "application/json" 
+from = "/api/*"
+to = "http://95.163.221.125:8080/:splat"
+status = 200
+force = true
