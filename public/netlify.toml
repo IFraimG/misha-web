@@ -4,7 +4,7 @@
   status = 200
   force = true
 
-[[headers]]
-  for = "/*"
-  [headers.values]
-    Content-Type = "application/json"
+  [[headers]]
+    for = "/*"
+    [headers.values]
+      Content-Type = "application/json"
