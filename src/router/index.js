@@ -1,12 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import FuncView from '../views/FuncView.vue'
+import NotFound from '../views/NotFound.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
+      path: '/home',
       name: 'home',
       component: HomeView
     },
@@ -16,9 +17,14 @@ const router = createRouter({
       component: () => import('../views/AboutView.vue')
     },
     {
-      path: '/main',
+      path: '/',
       name: 'func',
       component: FuncView
+    },
+    {
+      path: "/:catchAll(.*)",
+      name: "NotFound",
+      component: NotFound,
     },
   ]
 })
@@ -29,9 +35,8 @@ router.beforeEach(async (to, from, next) => {
 	})
 
   if (json.status == 401 && to.name != "home") return next({ name: "home" })
-  else if (to.name == "home") return next()
 
-  return next({ name: "func" })
+  return next()
 })
 
 router.afterEach((to, from, failure) => {
