@@ -143,7 +143,7 @@ const newLinkDescription = reactive({ value: "" })
 const createFolder = async (isSuccess) => {
 	if (isSuccess && folderTitle.value.length > 0) {
 		try {
-			let json = await fetch(`${import.meta.env.VITE_SERVER}/folders/create/`, {
+			let json = await fetch(`${import.meta.env.VITE_SERVER}/folders/create`, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
@@ -172,7 +172,7 @@ const openModalCreateLink = isTrue => isModalLinkCreate.value = isTrue
 
 onMounted(async () => {
 	try {
-		let json = await fetch(`${import.meta.env.VITE_SERVER}folders/getFoldersByUserID?userID=${localStorage.getItem("userID")}/`, {
+		let json = await fetch(`${import.meta.env.VITE_SERVER}/folders/getFoldersByUserID?userID=${localStorage.getItem("userID")}`, {
 			method: "GET", headers: { "Content-Type": "application/json", "Authorization": localStorage.getItem("token") },
 		})
 
@@ -189,7 +189,7 @@ onMounted(async () => {
 
 const findFolder = async () => {
 	try {
-		let json = await fetch(`${import.meta.env.VITE_SERVER}folders/findFoldersByTitle?userID=${localStorage.getItem("userID")}&title=${searchText.value}/`, {
+		let json = await fetch(`${import.meta.env.VITE_SERVER}/folders/findFoldersByTitle?userID=${localStorage.getItem("userID")}&title=${searchText.value}`, {
 			method: "GET", headers: { "Content-Type": "application/json", "Authorization": localStorage.getItem("token") },
 		})
 
@@ -203,7 +203,7 @@ const findFolder = async () => {
 
 const openLinks = async (folder) => {
 	try {
-		let json = await fetch(`${import.meta.env.VITE_SERVER}links/getLinksByFolderID?folderID=${folder.folderID}/`, {
+		let json = await fetch(`${import.meta.env.VITE_SERVER}/links/getLinksByFolderID?folderID=${folder.folderID}`, {
 			method: "GET", headers: { "Content-Type": "application/json", "Authorization": localStorage.getItem("token") },
 		})
 
@@ -221,7 +221,7 @@ const openCurrentLink = (link) => window.open(link, '_blank')
 const removeFolder = async isConfirm => {
 	if (isConfirm) {
 		try {
-			await fetch(`${import.meta.env.VITE_SERVER}folders/deleteFolderByFolderID?folderID=${activeFolder.value.folderID}/`, {
+			await fetch(`${import.meta.env.VITE_SERVER}/folders/deleteFolderByFolderID?folderID=${activeFolder.value.folderID}`, {
 				method: "DELETE", headers: { "Content-Type": "application/json", "Authorization": localStorage.getItem("token") },
 			})
 			
@@ -246,7 +246,7 @@ const setRemoveLink = linkID => {
 const removeLink = async (isTrue) => {
 	if (isTrue) {
 		try {
-			await fetch(`${import.meta.env.VITE_SERVER}links/deleteLinkByLinkID?linkID=${removeLinkID.value}/`, {
+			await fetch(`${import.meta.env.VITE_SERVER}/links/deleteLinkByLinkID?linkID=${removeLinkID.value}`, {
 				method: "DELETE", headers: { "Content-Type": "application/json", "Authorization": localStorage.getItem("token") },
 			})
 			

@@ -155,7 +155,7 @@ const sendAuth = async () => {
 	console.log(phoneInput.value, passwordInput.value);
 	if (phoneInput.value.length > 0 && passwordInput.value.length > 0) {
 		try {
-			let json = await fetch(`${import.meta.env.VITE_SERVER}auth/users/${isSignupStatus.value ? "signup" : "login"}/`, {
+			let json = await fetch(`${import.meta.env.VITE_SERVER}/auth/users/${isSignupStatus.value ? "signup" : "login"}`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
