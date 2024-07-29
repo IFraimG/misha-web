@@ -9,7 +9,7 @@
 				</form>
 				<div v-if="foldersList.value != null && foldersList.value?.length > 0" class="left_block__text-container">
 					<div v-for="item in foldersList.value" :key="item.folderID" @click="openLinks(item)" :class="activeFolder.value.folderID == item.folderID ? 'folder folder__active' : 'folder'">
-						<img v-if="item.preview.length > 0" :src="'http://95.163.221.125:8080/image/' + item.preview" alt="" class="folder__back">
+						<img v-if="item.preview.length > 0" :src="viteServer + item.preview" alt="" class="folder__back">
 						<img v-else src="@/assets/img/grey_back.svg" alt="" class="folder__back">
 						<div class="folder__bar">
 							<div class="folder__barsik">
@@ -35,9 +35,6 @@
 							<div class="panel__edit" @click="setOpenPanel(false)">
 								<p class="panel__edit_text">Закрыть</p>
 							</div>
-							<div class="panel__edit" @click="openModalCreateLink(true)">
-								<p class="panel__edit_text">Добавить ссылку</p>
-							</div>
 							<div class="panel__edit" @click="openModalFolderDelete(true)">
 								<p class="panel__delete_text">Удалить папку</p>
 							</div>
@@ -48,7 +45,7 @@
 				</div>
 				<div class="folders__list">
 					<div class="folder_element" v-for="(item, index) in linksList.value" :key="item.linkID" @click="openCurrentLink(item.link)">
-						<img v-if="item.image.length > 0" :src="'http://95.163.221.125:8080/image/' + item.image" alt="" class="folder_element__back">
+						<img v-if="item.image.length > 0" :src="viteServer + item.image" alt="" class="folder_element__back">
 						<img v-else src="@/assets/img/grey_back.svg" alt="" class="folder_element__back">
 						<div class="folder_element__bar">
 							<img src="@/assets/img/cancel.svg" alt="" class="folder_element__delete" @click.stop="setRemoveLink(item.linkID)" />
@@ -139,6 +136,7 @@ const newLink = reactive({ value: "" })
 const newLinkTitle = reactive({ value: "" })
 const newLinkDescription = reactive({ value: "" })
 
+const viteServer = import.meta.env.VITE_SERVER
 
 const createFolder = async (isSuccess) => {
 	if (isSuccess && folderTitle.value.length > 0) {
